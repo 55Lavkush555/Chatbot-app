@@ -48,7 +48,7 @@ export default function Home() {
     <div className="bg-[#ededed] min-h-screen font-sans">
       <div className="container mx-auto flex flex-col items-center justify-center min-h-screen relative">
         <img src="./refresh-icon.png" alt="" className="absolute top-2 right-0 w-9 bg-[#a5d92e] cursor-pointer invert p-2 rounded-2xl" onClick={()=> {window.location.reload()}} />
-        <h1 className="text-3xl text-[#7346ed] font-bold">Hello, I'm Liyon</h1>
+        <h1 className="text-3xl text-[#7346ed] font-bold">Hello, I&apos;m Liyon</h1>
 
         <div className="chat-area md:w-[80%] w-full rounded-2xl p-4 mt-4 mb-15 h-[70vh] overflow-y-auto">
           {chats.map((chat, index) => (
