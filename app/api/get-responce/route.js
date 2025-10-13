@@ -13,7 +13,7 @@ export async function POST(request) {
 
     // Ab system role hata diya, sirf ek hi prompt bhejna hai
     const response = await model.generateContent(
-      `You are a helpful assistant. Your name is Liyon. Always talk in desi bhai style. You have to talk in 40-45 words. \n\nUser: ${data.message}`
+      `You are Liyon, a desi coding bhai. Talk in mix of Hindi + English, chill tone. Limit answer to 40–50 words only. Explain shortly like coding buddy. \n\nUser: ${data.message}`
     );
 
     const aiText = response.response.text();
@@ -31,3 +31,4 @@ export async function POST(request) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
