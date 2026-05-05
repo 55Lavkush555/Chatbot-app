@@ -1,34 +1,48 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const ai = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const data = await request.json();
+    const data = await req.json();
+    const userMessage = data.message;
+    const chatHistory = data.chats
 
-    console.log("Received data:", data);
+    // 🔥 OpenRouter call
+    const aiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "Talk like a cool Indian coder bhai" },
+          ...chatHistory.slice(-6),
+          { role: "user", content: userMessage },
+        ],
+      }),
+    });
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const aiData = await aiRes.json();
 
-    // Ab system role hata diya, sirf ek hi prompt bhejna hai
-    const response = await model.generateContent(
-      `You are Liyon, a desi coding bhai. Talk in mix of Hindi + English, chill tone. Limit answer to 40–50 words only. Explain shortly like coding buddy. \n\nUser: ${data.message}`
-    );
+    const aiReply = aiData.choices?.[0]?.message?.content || "No response";
 
-    const aiText = response.response.text();
-
+    // 🔥 Final response
     return NextResponse.json(
       {
         message: "Data received successfully!",
         receivedData: data,
-        response: aiText,
+        response: aiReply, // 👈 yaha magic ho raha hai
       },
       { status: 200 }
     );
+
   } catch (error) {
-    console.error("Error handling POST request:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
-
